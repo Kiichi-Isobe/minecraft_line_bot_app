@@ -26,15 +26,25 @@ class LinebotController < ApplicationController
       when Line::Bot::Event::Message
         case event.type
         when Line::Bot::Event::MessageType::Text
-          message = {
-            type: 'text',
-            text: event.message['text']
-          }
-          client.reply_message(event['replyToken'], message)
+          if event.message['text'] == '今日の時間を決めて'
+            message = {
+              type: 'text',
+              text: play_time
+            }
+            client.reply_message(event['replyToken'], message)
+          end
         end
       end
     }
 
     head :ok
+  end
+
+  private
+
+  def play_time
+    time = rand(361)
+    h, m = time.divmod(60)
+    "#{h}時間#{m}分"
   end
 end
